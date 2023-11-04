@@ -34,29 +34,28 @@ def change_project_name():
 def main():
     st.set_page_config(
         layout="wide",
-        page_title="IFC Stream",
+        page_title="IFC viewer",
         page_icon="✍️",
     )
-    st.title("Streamlit IFC")
+    st.title("IFC viewer")
     st.markdown(
         """ 
-    ###  📁 Click on Browse File in the Side Bar to start
+    ###  📁 Нажмите выбрать файл для дальнейшего начала просмотра
     """
     )
 
-    ## Add File uploader to Side Bar Navigation
-    st.sidebar.header('Model Loader')
-    st.sidebar.file_uploader("Choose a file", type=['ifc'], key="uploaded_file", on_change=callback_upload)
+    # Add File uploader to Side Bar Navigation
+    st.sidebar.header('Загрузчик модели')
+    st.sidebar.file_uploader("Выбрать файл", type=['ifc'], key="uploaded_file", on_change=callback_upload)
 
-    ## Add File Name and Success Message
+    # Add File Name and Success Message
     if "is_file_loaded" in session and session["is_file_loaded"]:
-        st.sidebar.success(f'Project successfuly loaded')
-        st.sidebar.write("🔃 You can reload a new file  ")
+        st.sidebar.success(f'Проект успешно загружен')
+        st.sidebar.write("🔃 Вы можете обновить перезагрузить проект  ")
 
         col1, col2 = st.columns([2, 1])
-        col1.subheader(f'Start Exploring "{get_project_name()}"')
-        col2.text_input("✏️ Change Project Name", key="project_name_input")
-        col2.button("✔️ Apply", key="change_project_name", on_click=change_project_name())
+        col1.text_input("✏️ Задать имя проекту", key="project_name_input")
+        col1.button("✔️ Подтвердить", key="change_project_name", on_click=change_project_name())
 
     st.sidebar.write("""
     --------------
