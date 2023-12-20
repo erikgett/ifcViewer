@@ -64,7 +64,7 @@ def get_attribute_value(object_data, attribute):
 def create_pandas_dataframe(data, pset_attributes):
     import pandas as pd
 
-    ## List of Attributes
+    # List of Attributes
     attributes = [
                      "ExpressId",
                      "GlobalId",
@@ -74,7 +74,7 @@ def create_pandas_dataframe(data, pset_attributes):
                      "Level",
                      "Type",
                  ] + pset_attributes
-    ## Export Data to Pandas
+    # Export Data to Pandas
     pandas_data = []
     for object_data in data:
         row = []

@@ -137,7 +137,6 @@ function computeSurfaceArea( bounds ) {
 	const d2 = bounds[ 5 ] - bounds[ 2 ];
 
 	return 2 * ( d0 * d1 + d1 * d2 + d2 * d0 );
-
 }
 
 function ensureIndex( geo, options ) {
@@ -164,9 +163,7 @@ function ensureIndex( geo, options ) {
 			index[ i ] = i;
 
 		}
-
 	}
-
 }
 
 // Computes the set of { offset, count } ranges which need independent BVH roots. Each
@@ -3044,9 +3041,9 @@ const intersectsGeometry = ( function () {
 				cachedObb.intersectsBox( boundingBox$1 ) &&
 				intersectsGeometry( right, geometry, otherGeometry, geometryToBvh, cachedObb );
 
-			if ( rightIntersection ) return true;
+			return !!rightIntersection;
 
-			return false;
+
 
 		}
 
