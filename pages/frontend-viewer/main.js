@@ -48,8 +48,9 @@ function sendValue(value) {
   Streamlit.setComponentValue(value)
 }
 
-function sendCameraSnapShot() {
-    Streamlit.getIfcRender()
+function sendCameraSnapShot(imgData) {
+  // Отправляем данные с указанием, что это скриншот
+  Streamlit.setComponentValue({type: "ifcRender", data: imgData});
 }
 
 let renderer, scene, camera;
@@ -190,20 +191,31 @@ function setup(){
     }
     }
 
-    window.ondevicemotion = (event) => sendCameraSnapShot();
+    let changeTimer;
 
-    // Pre-Highlight Materials
-    window.onmousemove = (event) => sendCameraSnapShot();
-
+    controls.addEventListener('change', () => {
+        // Если таймер уже запущен, очистим его
+        if (changeTimer) {
+            clearTimeout(changeTimer);
+        }
+    
+        // Устанавливаем таймер на 2 секунды
+        changeTimer = setTimeout(() => {
+            // Выполнить рендеринг сцены и получить скриншот
+            renderer.render(scene, camera);
+            var imgData = renderer.domElement.toDataURL();
+            var img = new Image();
+            img.src = imgData;
+            sendCameraSnapShot(imgData)
+        }, 1000); // 2000 миллисекунд = 2 секунды
+    });
       
     // Highlight Selected Object and send Object data to Python
-      window.ondblclick = (event) => {
-        highlight(event, selectMat, selectModel);
-        let data = getObjectData(event);
-        sendValue(data)
-      }
-
-
+    window.ondblclick = (event) => {
+      highlight(event, selectMat, selectModel);
+      let data = getObjectData(event);
+      sendValue(data)
+    }
 }
 
 
@@ -234,4 +246,4 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, loadURL)
 // Tell Streamlit that the component is ready to receive events
 Streamlit.setComponentReady()
 // Render with the correct height, if this is a fixed-height component
-Streamlit.setFrameHeight(window.innerWidth)
+Streamlit.setFrameHeight(window.innerWidth/2)

@@ -1,7 +1,12 @@
 import streamlit as st
 from tools import ifchelper
+import io
 import json
 import ifcopenshell
+import base64
+from pages.Img2Img.prompt_editor import translate_prompt, correct_prompt, add_lora, correct_neg_prompt
+from pages.Img2Img.request_SD_img2img import ControlnetRequest
+from PIL import Image
 
 from pathlib import Path
 
@@ -124,15 +129,52 @@ def execute():
     initialise_debug_props()
     st.header("🎮 IFC viewer")
 
-    # Кнопка для скриншота
-    if st.button('Сделать Скриншот'):
-        # JavaScript для создания скриншота
-        print("asdfasdf")
-
     if "ifc_file" in session and session["ifc_file"]:
         if "ifc_js_response" not in session:
             session["ifc_js_response"] = ""
+        
         draw_3d_viewer()
+
+        prompt = st.text_input("Введите положительное описание изображения")
+        if prompt:
+            st.write("Перевод подсказки на английском:", translate_prompt(prompt))
+
+        neg_prompt = st.text_input("Введите негативное описание изображения (что не нужно включать в изображение)")
+        if neg_prompt:
+            st.write("Перевод негативной подсказки на английском:", translate_prompt(neg_prompt))
+        
+        if prompt is None:
+            prompt = ""
+        if neg_prompt is None:
+            neg_prompt = ""
+
+        # Определение списков для выбора
+        room_types = ['Гостиная', 'Спальня', 'Туалет', 'Ванная комната', 'Кухня']
+        room_styles = ['скандинавский', 'классический', 'лофт']
+
+        # Создание двух колонок
+        col1, col2 = st.columns(2)
+
+        # Выбор типа помещения в первой колонке
+        with col1:
+            selected_room_type = st.selectbox('Выберите тип помещения:', room_types)
+
+        # Выбор стиля помещения во второй колонке
+        with col2:
+            selected_room_style = st.selectbox('Выберите стиль помещения:', room_styles)
+        
+        if st.button('Сделать рендер'):
+            if session.ifc_js_response != "":
+                img64  = session.ifc_js_response['data']
+                # Отображение изображения
+                if img64 is not None:
+                    js = ControlnetRequest(img64,
+                               correct_prompt(add_lora(translate_prompt(prompt))),
+                               correct_neg_prompt(neg_prompt)).send_request()
+                    image_bytes = base64.b64decode(js['images'][0])
+                    image = Image.open(io.BytesIO(image_bytes))
+                    st.image(image, caption="Изображение", use_column_width=True)
+
 
     else:
         st.header("Перед просмотром загрузите ifc-модель")
