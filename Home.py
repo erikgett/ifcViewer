@@ -8,19 +8,6 @@ def callback_upload():
     session["ifc_file"] = ifcopenshell.file.from_string(session["array_buffer"].decode("utf-8"))
     session["is_file_loaded"] = True
 
-    ### Empty Previous Model Data from Session State
-    session["isHealthDataLoaded"] = False
-    session["HealthData"] = {}
-    session["Graphs"] = {}
-    session["SequenceData"] = {}
-    session["CostScheduleData"] = {}
-
-    ### Empty Previous DataFrame from Session State
-    session["DataFrame"] = None
-    session["Classes"] = []
-    session["IsDataFrameLoaded"] = False
-
-
 def get_project_name():
     return session.ifc_file.by_type("IfcProject")[0].Name
 
@@ -52,10 +39,6 @@ def main():
     if "is_file_loaded" in session and session["is_file_loaded"]:
         st.sidebar.success(f'Проект успешно загружен')
         st.sidebar.write("🔃 Вы можете обновить перезагрузить проект  ")
-
-        col1, col2 = st.columns([2, 1])
-        col1.text_input("✏️ Задать имя проекту", key="project_name_input")
-        col1.button("✔️ Подтвердить", key="change_project_name", on_click=change_project_name())
 
     st.sidebar.write("""
     --------------

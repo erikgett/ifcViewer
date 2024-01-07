@@ -20,6 +20,9 @@ function sendMessageToStreamlitClient(type, data) {
       setComponentValue: function(value) {
           sendMessageToStreamlitClient("streamlit:setComponentValue", {value: value});
       },
+      getIfcRender: function (){
+          sendMessageToStreamlitClient("streamlit:getIfcRender", {apiVersion: 1});
+      },
       RENDER_EVENT: "streamlit:render",
       loadViewer: function(callback) { 
             callback()

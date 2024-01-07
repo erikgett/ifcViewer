@@ -48,13 +48,19 @@ function sendValue(value) {
   Streamlit.setComponentValue(value)
 }
 
+function sendCameraSnapShot() {
+    Streamlit.getIfcRender()
+}
+
+let renderer, scene, camera;
 function setup(){
-  //BASIC THREE JS SCENE, CAMERA, LIGHTS, MOUSE CONTROLS
-    window.scene = new Scene();
+    //BASIC THREE JS SCENE, CAMERA, LIGHTS, MOUSE CONTROLS
+    scene= new Scene();
+    window.scene = scene
     const ifc = ifcLoader.ifcManager;
 
     //Creates the camera (point of view of the user)
-    const camera = new PerspectiveCamera(75, size.width / size.height);
+    camera = new PerspectiveCamera(75, size.width / size.height);
     camera.position.z = 15;
     camera.position.y = 13;
     camera.position.x = 8;
@@ -72,7 +78,7 @@ function setup(){
   
     //Sets up the renderer, fetching the canvas of the HTML
     const threeCanvas = document.getElementById("three-canvas");
-    const renderer = new WebGLRenderer({ canvas: threeCanvas, alpha: true });
+    renderer = new WebGLRenderer({ canvas: threeCanvas, alpha: true, preserveDrawingBuffer: true });
     renderer.setSize(size.width, size.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   
@@ -183,9 +189,12 @@ function setup(){
         ifc.removeSubset(model.id, window.scene, material);
     }
     }
-    
+
+    window.ondevicemotion = (event) => sendCameraSnapShot();
+
     // Pre-Highlight Materials
-    window.onmousemove = (event) => highlight(event, preselectMat, highlightModel);
+    window.onmousemove = (event) => sendCameraSnapShot();
+
       
     // Highlight Selected Object and send Object data to Python
       window.ondblclick = (event) => {
@@ -193,7 +202,11 @@ function setup(){
         let data = getObjectData(event);
         sendValue(data)
       }
+
+
 }
+
+
 
 async function sigmaLoader (url, ifcLoader){
   const ifcModel = await ifcLoader.ifcManager.parse(url.buffer)
@@ -221,4 +234,4 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, loadURL)
 // Tell Streamlit that the component is ready to receive events
 Streamlit.setComponentReady()
 // Render with the correct height, if this is a fixed-height component
-Streamlit.setFrameHeight(window.innerWidth/2)
+Streamlit.setFrameHeight(window.innerWidth)

@@ -12,15 +12,14 @@ frontend_dir = (Path(__file__).parent / "frontend-viewer").absolute()
 
 _component_func = components.declare_component("ifc_js_viewer", path=str(frontend_dir))
 
-
 def ifc_js_viewer(url: Optional[str] = None):
     component_value = _component_func(url=url)
     return component_value
 
+def get_current_ifc_file():
+    return session.array_buffer
 
 def draw_3d_viewer():
-    def get_current_ifc_file():
-        return session.array_buffer
     session.ifc_js_response = ifc_js_viewer(get_current_ifc_file())
 
 
@@ -93,7 +92,6 @@ def get_object_data(fromId=None):
         debug_props["inverse_references"] = []
 
         if element:
-
             for key, value in element.get_info().items():
                 add_attribute(debug_props["attributes"], key, value)
 
@@ -125,6 +123,12 @@ def edit_object_data(object_id, attribute):
 def execute():
     initialise_debug_props()
     st.header("🎮 IFC viewer")
+
+    # Кнопка для скриншота
+    if st.button('Сделать Скриншот'):
+        # JavaScript для создания скриншота
+        print("asdfasdf")
+
     if "ifc_file" in session and session["ifc_file"]:
         if "ifc_js_response" not in session:
             session["ifc_js_response"] = ""
@@ -133,6 +137,6 @@ def execute():
     else:
         st.header("Перед просмотром загрузите ifc-модель")
 
-
 session = st.session_state
+
 execute()
