@@ -4,7 +4,7 @@ import io
 import json
 import ifcopenshell
 import base64
-from pages.Img2Img.prompt_editor import translate_prompt, correct_prompt, add_lora, correct_neg_prompt
+from pages.Img2Img.prompt_editor import translate_prompt, correct_prompt, correct_neg_prompt
 from pages.Img2Img.request_SD_img2img import ControlnetRequest
 from PIL import Image
 
@@ -169,7 +169,7 @@ def execute():
                 # Отображение изображения
                 if img64 is not None:
                     js = ControlnetRequest(img64,
-                               correct_prompt(add_lora(translate_prompt(prompt))),
+                               correct_prompt(translate_prompt(prompt)),
                                correct_neg_prompt(neg_prompt)).send_request()
                     image_bytes = base64.b64decode(js['images'][0])
                     image = Image.open(io.BytesIO(image_bytes))

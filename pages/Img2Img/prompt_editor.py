@@ -15,11 +15,6 @@ def translate_prompt(prompt):
     return out_promt[:-2]
 
 
-def add_lora(prompt):
-    defaul_prompt = "<lora:XSarchitectural-38InteriorForBedroom_safetensors (1):1>"
-    return defaul_prompt + prompt
-
-
 # Добавляет в промт слова, которые улучшат итоговый результат
 def correct_neg_prompt(neg_prompt):
     return neg_prompt
