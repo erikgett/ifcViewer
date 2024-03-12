@@ -2,7 +2,8 @@ import requests
 
 
 class ControlnetRequest:
-    def __init__(self, b64img, prompt, neg_prompt, url="http://localhost:7860",selected_room_type = "Kitchen", selected_room_style = "Classic"):
+    def __init__(self, b64img, prompt, neg_prompt,selected_room_type = "Kitchen", selected_room_style = "Classic", url="http://localhost:7860"):
+        print(f'<lora:{selected_room_type}{selected_room_style}:1>')
         self.url = url + "/sdapi/v1/img2img"
         self.url_opt = url + "/sdapi/v1/options"
         self.body = {
